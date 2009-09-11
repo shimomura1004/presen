@@ -10,10 +10,15 @@
 div.page {
     border: 5px solid white;
     -webkit-border-radius: 10px;
-    background-color: silver;
+    background-image:
+       -webkit-gradient(linear, left top, left bottom, from(white),
+                        color-stop(0.1, white), to(rgb(205, 221, 241)));
+}
+div.title {
     text-align: center;
 }
 body {
+    font-size: 30pt;
     background-color: black;
 }
 h1 {
@@ -21,9 +26,8 @@ h1 {
 }
     </style>
     <script type="text/javascript">
-
 function init(){
-   initializePresen(800, 600, 2, 100);
+   initializePresen(1000, 640, 2, 100);
    setup1();
 }
     </script>
@@ -31,28 +35,36 @@ function init(){
 
   <body onload="init()">
     <!-- ======================================== -->
-    <div class="page">
-      <h1>Make a presentation with JavaScript and CSS</h1>
+    <div class="page title">
+      <h1>Make a presentation<br/>with JavaScript and CSS</h1>
       <img id="dogpic" src="dog.jpg"
-           style="width: 400px; opacity:0;
+           style="width: 400px; opacity:1;
                   -webkit-perspective: 800;
                   -webkit-perspective-origin: 50% 200px;
                   -webkit-transition-property: -webkit-transform, opacity;
                   -webkit-transition-duration: 2s, 1s;"/>
-      <h3>Inspired by Amachang :)</h3>
+      <p style="font-size: 16pt;">Inspired by Amachang :)</p>
     </div>
     <script>
 function setup1(){
    animation.setActions( 0,
-     [function(){$("#dogpic").css("opacity", "1")},
-      function(){$("#dogpic").css("-webkit-transform", "rotateX(180deg)")}],
-     [function(){$("#dogpic").css("opacity", "0")},
-      function(){$("#dogpic").css("-webkit-transform", "rotateX(0deg)")}]);
+     [function(){$("#dogpic").css("opacity", "0").
+         css("-webkit-transform", "rotatez(180deg)")}],
+     [function(){$("#dogpic").css("opacity", "1").
+         css("-webkit-transform", "rotateX(0deg)")}]);
 }
     </script>
     <!-- ======================================== -->
     <div class="page">
-      <h1>Second Page</h1>
+      <h1>CSS によるアニメーション</h1>
+      <ul>
+        <li>CSS で アニメーションを指定</li>
+        <ul>
+          <li>transition-property: opacity 1s linear;</li>
+          <li>opacity の変化は線形に1秒かけておこなう</li>
+        </ul>
+        <li>あとは JavaScript でスタイルの値を変更するだけ！</li>
+      </ul>
     </div>
     <!-- ======================================== -->
     <div class="page">
