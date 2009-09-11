@@ -1,13 +1,28 @@
 function PresenAnimater(){
    this.pointer = 0;
    this.actionStack = [];
+   this.backActionStack = [];
+   this.currentPageAction;
+   this.currentPageBackAction;
 }
-PresenAnimater.prototype.addAction = function(){
+PresenAnimater.prototype.addActions = function(actions,backActions){
+   this.actionStack.push(actions);
+   this.backActionStack.push(backActions);
 }
 PresenAnimater.prototype.doNextAction = function(){
+   this.currentPageAction[this.pointer]();
+   this.pointer += 1;
 }
 PresenAnimater.prototype.stepBackPrevAction = function(){
+   this.pointer -= 1;
+   this.currentPageBackAction[this.pointer]();
 }
+// set actions for current page
+PresenAnimater.prototype.setAction = function(pageIdx){
+   this.currentPageAction     = actionStack[pageIdx];
+   this.currentPageBackAction = backActionStack[pageIdx];
+}
+
 
 function PresenPager(lastPage, lastThumbsPage, numOfThumbs){ 
    this.adjustThumbsPage = function(){
@@ -48,18 +63,20 @@ PresenPager.prototype.prevThumbsPage = function(){
    }
 };
 
-function initializePresen(pageWidth, pageHeight, numOfThumbsInRow){
+var animation = new PresenAnimater();
+var pager;
+
+function initializePresen(pageWidth, pageHeight,
+                          numOfThumbsInRow, interval){
    const Config = {
          'pageWidth': pageWidth,
          'pageHeight': pageHeight,
          'numOfThumbsInRow': numOfThumbsInRow,
          'numOfPagesInThumbsPage': Math.pow(numOfThumbsInRow, 2),
-         'intervalOfPages': 20,
+         'intervalOfPages': 20
    }
    const keymap = {'left':37, 'up':38, 'right':39, 'down':40};
    var pagedata;
-
-
 
    const viewMode   = 0;
    const thumbsMode = 1;
@@ -87,7 +104,7 @@ function initializePresen(pageWidth, pageHeight, numOfThumbsInRow){
             x = defaultX +
                (Math.floor(i/Config.numOfPagesInThumbsPage) -
                 pager.currentThumbsPage) *
-               (thumbsPageWidth+pageWidth/4);
+               (thumbsPageWidth + interval);
             y = defaultY;
             
             break;
@@ -115,15 +132,19 @@ function initializePresen(pageWidth, pageHeight, numOfThumbsInRow){
          }
       })(i), false);
       
+
       var pagedatum = {
          page: pages[i],
-         thumbPosX: 
+         thumbPosX:
+         Config.pageWidth/2 + 
             (Config.pageWidth + Config.intervalOfPages) *
-            (i%Config.numOfThumbsInRow - 1),
+            (i % Config.numOfThumbsInRow - Config.numOfThumbsInRow/2),
          thumbPosY:
+         Config.pageHeight/2 +
             (Config.pageHeight + Config.intervalOfPages) *
-            (Math.floor((i % Config.numOfPagesInThumbsPage) /
-                        Config.numOfThumbsInRow) - 1)
+            (Math.floor(i%Config.numOfPagesInThumbsPage /
+                        Config.numOfThumbsInRow) -
+             Config.numOfThumbsInRow/2),
       };
       pages[i].style.webkitTransform = 
          "scale(1) translate("+
@@ -132,10 +153,10 @@ function initializePresen(pageWidth, pageHeight, numOfThumbsInRow){
       pagedata[i] = pagedatum;
    }
 
-   var pager = new PresenPager(pagedata.length,
-                               Math.floor(pagedata.length /
-                                          Config.numOfPagesInThumbsPage),
-                               Config.numOfPagesInThumbsPage);
+   pager = new PresenPager(pagedata.length,
+                           Math.floor(pagedata.length /
+                                      Config.numOfPagesInThumbsPage),
+                           Config.numOfPagesInThumbsPage);
 
    translatePage();
    document.body.addEventListener("keyup", function(e){
