@@ -16,13 +16,15 @@ PresenAnimater.prototype.init = function(numOfPages){
       this.backActionStack.push([]);
    }
 };
-PresenAnimater.prototype.addActions = function(actions,backActions){
-   this.actionStack.push(actions);
-   this.backActionStack.push(backActions);
+PresenAnimater.prototype.setActions =
+function(pageIdx, actions, backActions){
+   this.actionStack[pageIdx] = actions;
+   this.backActionStack[pageIdx] = backActions;
 }
 PresenAnimater.prototype.doNextAction = function(){
    if (this.pointer == this.currentPageAction.length) {
       pager.gotoNextPage();
+      this.pointer = 0;
    } else {
       this.currentPageAction[this.pointer]();
       this.pointer += 1;
@@ -30,14 +32,17 @@ PresenAnimater.prototype.doNextAction = function(){
 }
 PresenAnimater.prototype.stepBackPrevAction = function(){
    if (this.pointer == 0) {
-      pager.gotoPrevPage();
+      if(pager.currentPage != 0) {
+         pager.gotoPrevPage();
+         this.pointer = this.currentPageBackAction.length;
+      }
    } else {
       this.pointer -= 1;
       this.currentPageBackAction[this.pointer]();
    }
 }
 // set actions for current page
-PresenAnimater.prototype.setAction = function(pageIdx){
+PresenAnimater.prototype.prepareAction = function(pageIdx){
    this.currentPageAction     = this.actionStack[pageIdx];
    this.currentPageBackAction = this.backActionStack[pageIdx];
 }
@@ -68,19 +73,21 @@ function(lastPage, lastThumbsPage, numOfThumbs){
 PresenPager.prototype.gotoNextPage = function(){
    if (this.currentPage < this.lastPage-1) {
       this.currentPage++;
+      animation.prepareAction(this.currentPage);
       this.adjustThumbsPage();
    }
 };
 PresenPager.prototype.gotoPrevPage = function(){
    if (this.currentPage > 0) {
       this.currentPage--;
+      animation.prepareAction(this.currentPage);
       this.adjustThumbsPage();
    }
 };
 PresenPager.prototype.setPage = function(idx){
    this.currentPage = idx;
+   animation.prepareAction(this.currentPage);
    this.adjustThumbsPage();
-   animation.setAction(idx);
 };
 PresenPager.prototype.nextThumbsPage = function(){
    if (this.currentThumbsPage < this.lastThumbsPage) {
@@ -164,6 +171,7 @@ function initializePresen
       pages[i].addEventListener('click', (function(i){
          return function(e){
             pager.setPage(i);
+            animation.prepareAction(pager.currentPage);
             currentMode = viewMode;
             translatePage();
          }
@@ -197,7 +205,6 @@ function initializePresen
       switch(e.keyCode) {
       case keymap.left:
          if (currentMode == viewMode) {
-//            pager.gotoPrevPage();
             animation.stepBackPrevAction();
          } else if (currentMode == thumbsMode) {
             pager.prevThumbsPage();
@@ -207,7 +214,6 @@ function initializePresen
 
       case keymap.right:
          if (currentMode == viewMode) {
-//            pager.gotoNextPage();
             animation.doNextAction();
          } else if (currentMode == thumbsMode) {
             pager.nextThumbsPage();
@@ -221,6 +227,8 @@ function initializePresen
          break;
 
       case keymap.down:
+         animation.prepareAction(this.currentPage);
+         pager.setPage(pager.currentPage);
          currentMode = viewMode;
          translatePage();
          break;

@@ -3,6 +3,7 @@
     <title>PRESENTATION</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <script type="text/javascript" src="presen.js"></script>
+    <script type="text/javascript" src="jquery.js"></script>
     <link rel="stylesheet" href="presen.css" type="text/css" media="screen" />
 
     <style type="text/css" media="screen">
@@ -20,8 +21,10 @@ h1 {
 }
     </style>
     <script type="text/javascript">
+
 function init(){
    initializePresen(800, 600, 2, 100);
+   setup1();
 }
     </script>
   </head>
@@ -29,9 +32,24 @@ function init(){
   <body onload="init()">
     <!-- ======================================== -->
     <div class="page">
-      <h1>Structure and Interpretation of Computer Programs</h1>
-      <img src="dog.jpg" style="width: 400px;" />
+      <h1>Make a presentation with JavaScript and CSS</h1>
+      <img id="dogpic" src="dog.jpg"
+           style="width: 400px; opacity:0;
+                  -webkit-perspective: 800;
+                  -webkit-perspective-origin: 50% 200px;
+                  -webkit-transition-property: -webkit-transform, opacity;
+                  -webkit-transition-duration: 2s, 1s;"/>
+      <h3>Inspired by Amachang :)</h3>
     </div>
+    <script>
+function setup1(){
+   animation.setActions( 0,
+     [function(){$("#dogpic").css("opacity", "1")},
+      function(){$("#dogpic").css("-webkit-transform", "rotateX(180deg)")}],
+     [function(){$("#dogpic").css("opacity", "0")},
+      function(){$("#dogpic").css("-webkit-transform", "rotateX(0deg)")}]);
+}
+    </script>
     <!-- ======================================== -->
     <div class="page">
       <h1>Second Page</h1>
