@@ -2,8 +2,6 @@ div.page {
     position: absolute;
     width:  800px; height: 600px;
     top:      0px; left:     0px;
-    border: 2px solid black;
-    background-color: silver;
 
     -webkit-box-shadow: rgba(0, 0, 0, 0.496094) 5px 5px 5px;
 
@@ -13,5 +11,5 @@ div.page {
       1s, 1s, 1s;
 }
 body {
-#    overflow: hidden;
+    overflow: hidden;
 }
