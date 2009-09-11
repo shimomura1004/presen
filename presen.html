@@ -1,145 +1,22 @@
-TODO: translate を使わないようにすること！
-
 <html>
   <head>
     <title>PRESENTATION</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-    <script type="text/javascript">
-
-function init(){
-   const Config = {
-         'pageWidth':800, 'pageHeight':600,
-         'intervalOfPages': 20,
-         'numOfThumbsInRow': 3
-   }
-   const keymap = {'left':37, 'up':38, 'right':39, 'down':40};
-   var pagedata;
-   var currentPage = 0;
-
-   const viewMode   = 0;
-   const thumbsMode = 1;
-   var currentMode = viewMode;
-
-
-   function setup(){
-      var pages = document.getElementsByClassName('page');
-      var numOfPagesInThumbsPage =
-         Config.numOfThumbsInRow * Config.numOfThumbsInRow;
-
-      pagedata = new Array(pages.length);
-
-      for (var i=0 ; i < pages.length ; i++) {
-         pages[i].style.zIndex = 1000-i;
-         pages[i].style.top  = (window.innerHeight-Config.pageHeight)/2;
-         pages[i].style.left = (window.innerWidth-Config.pageWidth)/2;
-         
-         var pagedatum = {
-            page: pages[i],
-            posX: (Config.pageWidth + Config.intervalOfPages) * i,
-            posY: 0,
-            thumbPosX:
-            Math.floor(i / numOfPagesInThumbsPage) *
-               (Config.pageWidth*(Config.numOfThumbsInRow+0.5)) +
-               (Config.pageWidth + Config.intervalOfPages)*(i%Config.numOfThumbsInRow-1),
-            thumbPosY:
-               (Config.pageHeight + Config.intervalOfPages) *
-               (Math.floor((i % numOfPagesInThumbsPage) / Config.numOfThumbsInRow) - 1)
-         };
-         pages[i].style.webkitTransform = 
-            "scale(1) translate("+pagedatum.posX+"px, "+pagedatum.posY+"px)";
-         
-         pagedata[i] = pagedatum;
-      }
-   }
-
-
-   function adjustPagePositions(xname, yname, scale){
-      scale = scale ? scale : 1;
-
-      for (var i=0 ; i < pagedata.length ; i++) {
-         pagedata[i].page.style.webkitTransform = 
-            "scale("+scale+") translate("+
-            pagedata[i][xname]+"px, "+pagedata[i][yname]+"px)";
-      }
-   }
-   function setPageTo(idx, scale){
-      scale = scale ? scale : 1;
-
-      for (var i=0 ; i < pagedata.length ; i++) {
-
-         pagedata[i].page.style.webkitTransform = 
-            "scale("+scale+") translate("+
-            ((Config.pageWidth+Config.intervalOfPages) * (i-idx))+"px, 0px)";
-      }
-   }
-
-   setup();
-
-   document.body.addEventListener("keyup", function(e){
-      switch(e.keyCode) {
-         case keymap.left:
-         if (currentMode == viewMode) {
-            if (currentPage > 0) {
-               currentPage -= 1;
-            }
-            setPageTo(currentPage);
-         }
-         break;
-
-         case keymap.right:
-         if (currentMode == viewMode) {
-            if (currentPage < pagedata.length-1) {
-               currentPage += 1;
-            }
-            setPageTo(currentPage);
-         }
-         break;
-
-         case keymap.up:
-         currentMode = thumbsMode;
-         adjustPagePositions("thumbPosX", "thumbPosY", 1/Config.numOfThumbsInRow);
-         break;
-
-         case keymap.down:
-         currentMode = viewMode;
-         setPageTo(currentPage);
-         break;
-      }
-   }, false);
-}
-    </script>
+    <script type="text/javascript" src="presen.js"></script>
+    <link rel="stylesheet" href="presen.css" type="text/css" media="screen" />
 
     <style type="text/css" media="screen">
-div.page {
-    position: absolute;
-    width:  800px; height: 600px;
-    top:      0px; left:     0px;
-    border: 2px solid black;
-    background-color: silver;
-
-    -webkit-box-shadow: rgba(0, 0, 0, 0.496094) 5px 5px 5px;
-
-    -webkit-transition-property:
-      -webkit-transform, top, left;
-    -webkit-transition-duration:
-      1s, 1s, 1s;
-}
 div.page {
     text-align: center;
 }
 h1 {
     font-size: 60px;
 }
-body {
-    overflow: hidden;
-}
     </style>
   </head>
   <body onload="init()">
     <div class="page">
 <h1>Structure and Interpregation of Computer Programs</h1>
-<h2>名古屋大学情報科学研究科</h2>
-<h2>M2 下村翔</h2>
     </div>
     <div class="page">
 <h1>Second Page</h1>
