@@ -1,48 +1,77 @@
+var animation;
+var pager;
+
+/** ページごとのアニメーションを管理するクラス
+ */
 function PresenAnimater(){
    this.pointer = 0;
-   this.actionStack = [];
-   this.backActionStack = [];
-   this.currentPageAction;
-   this.currentPageBackAction;
+   this.actionStack = [];        // ページごとの動作リストのリスト
+   this.backActionStack = [];    // ページごとの戻り動作リストのリスト
+   this.currentPageAction = [];
+   this.currentPageBackAction = [];
 }
+PresenAnimater.prototype.init = function(numOfPages){
+   for (var i=0; i < numOfPages ; i++) {
+      this.actionStack.push([]);
+      this.backActionStack.push([]);
+   }
+};
 PresenAnimater.prototype.addActions = function(actions,backActions){
    this.actionStack.push(actions);
    this.backActionStack.push(backActions);
 }
 PresenAnimater.prototype.doNextAction = function(){
-   this.currentPageAction[this.pointer]();
-   this.pointer += 1;
+   if (this.pointer == this.currentPageAction.length) {
+      pager.gotoNextPage();
+   } else {
+      this.currentPageAction[this.pointer]();
+      this.pointer += 1;
+   }
 }
 PresenAnimater.prototype.stepBackPrevAction = function(){
-   this.pointer -= 1;
-   this.currentPageBackAction[this.pointer]();
+   if (this.pointer == 0) {
+      pager.gotoPrevPage();
+   } else {
+      this.pointer -= 1;
+      this.currentPageBackAction[this.pointer]();
+   }
 }
 // set actions for current page
 PresenAnimater.prototype.setAction = function(pageIdx){
-   this.currentPageAction     = actionStack[pageIdx];
-   this.currentPageBackAction = backActionStack[pageIdx];
+   this.currentPageAction     = this.actionStack[pageIdx];
+   this.currentPageBackAction = this.backActionStack[pageIdx];
 }
 
-
-function PresenPager(lastPage, lastThumbsPage, numOfThumbs){ 
+/** ページ遷移を管理するクラス
+ */
+function PresenPager(){ 
    this.adjustThumbsPage = function(){
       this.currentThumbsPage =
-      Math.floor(this.currentPage / numOfThumbs);
+      Math.floor(this.currentPage / this.numOfThumbs);
    };
 
-   this.lastPage = lastPage;
-   this.lastThumbsPage = lastThumbsPage;
+   this.lastPage;
+   this.lastThumbsPage;
+   this.numOfThumbs;
    this.currentPage = 0;
    this.currentThumbsPage = 0;
    return this;
-}
-PresenPager.prototype.nextPage = function(){
+};
+PresenPager.prototype.init =
+function(lastPage, lastThumbsPage, numOfThumbs){
+   this.lastPage = lastPage;
+   this.lastThumbsPage = lastThumbsPage;
+   this.numOfThumbs = numOfThumbs;
+   this.currentPage = 0;
+   this.currentThumbsPage = 0;
+};
+PresenPager.prototype.gotoNextPage = function(){
    if (this.currentPage < this.lastPage-1) {
       this.currentPage++;
       this.adjustThumbsPage();
    }
 };
-PresenPager.prototype.prevPage = function(){
+PresenPager.prototype.gotoPrevPage = function(){
    if (this.currentPage > 0) {
       this.currentPage--;
       this.adjustThumbsPage();
@@ -51,6 +80,7 @@ PresenPager.prototype.prevPage = function(){
 PresenPager.prototype.setPage = function(idx){
    this.currentPage = idx;
    this.adjustThumbsPage();
+   animation.setAction(idx);
 };
 PresenPager.prototype.nextThumbsPage = function(){
    if (this.currentThumbsPage < this.lastThumbsPage) {
@@ -63,11 +93,12 @@ PresenPager.prototype.prevThumbsPage = function(){
    }
 };
 
-var animation = new PresenAnimater();
-var pager;
+animation = new PresenAnimater();
+pager     = new PresenPager();
 
-function initializePresen(pageWidth, pageHeight,
-                          numOfThumbsInRow, interval){
+
+function initializePresen
+(pageWidth, pageHeight, numOfThumbsInRow, interval){
    const Config = {
          'pageWidth': pageWidth,
          'pageHeight': pageHeight,
@@ -117,6 +148,12 @@ function initializePresen(pageWidth, pageHeight,
 
    pages = document.getElementsByClassName('page');
    pagedata = new Array(pages.length);
+   animation.init(pages.length);
+   pager.init(pagedata.length,
+              Math.floor(pagedata.length /
+                         Config.numOfPagesInThumbsPage),
+              Config.numOfPagesInThumbsPage);
+
 
    for (var i=0 ; i < pages.length ; i++) {
       pages[i].style.zIndex = 1000-i;
@@ -153,17 +190,15 @@ function initializePresen(pageWidth, pageHeight,
       pagedata[i] = pagedatum;
    }
 
-   pager = new PresenPager(pagedata.length,
-                           Math.floor(pagedata.length /
-                                      Config.numOfPagesInThumbsPage),
-                           Config.numOfPagesInThumbsPage);
+
 
    translatePage();
    document.body.addEventListener("keyup", function(e){
       switch(e.keyCode) {
       case keymap.left:
          if (currentMode == viewMode) {
-            pager.prevPage();
+//            pager.gotoPrevPage();
+            animation.stepBackPrevAction();
          } else if (currentMode == thumbsMode) {
             pager.prevThumbsPage();
          }
@@ -172,7 +207,8 @@ function initializePresen(pageWidth, pageHeight,
 
       case keymap.right:
          if (currentMode == viewMode) {
-            pager.nextPage();
+//            pager.gotoNextPage();
+            animation.doNextAction();
          } else if (currentMode == thumbsMode) {
             pager.nextThumbsPage();
          }
