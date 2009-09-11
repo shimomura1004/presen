@@ -1,9 +1,5 @@
 div.page {
     position: absolute;
-    width:  800px; height: 600px;
-    top:      0px; left:     0px;
-
-    -webkit-box-shadow: rgba(0, 0, 0, 0.496094) 5px 5px 5px;
 
     -webkit-transition-property:
       -webkit-transform, top, left;

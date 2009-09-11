@@ -1,4 +1,14 @@
-// TODO: プレゼンの中身を考慮した遷移をできるように
+function PresenAnimater(){
+   this.pointer = 0;
+   this.actionStack = [];
+}
+PresenAnimater.prototype.addAction = function(){
+}
+PresenAnimater.prototype.doNextAction = function(){
+}
+PresenAnimater.prototype.stepBackPrevAction = function(){
+}
+
 function PresenPager(lastPage, lastThumbsPage, numOfThumbs){ 
    this.adjustThumbsPage = function(){
       this.currentThumbsPage =
@@ -53,7 +63,7 @@ function initializePresen(pageWidth, pageHeight, numOfThumbsInRow){
 
    const viewMode   = 0;
    const thumbsMode = 1;
-   var currentMode = viewMode;
+   var currentMode = thumbsMode;
 
    function translatePage() {
       for (var i=0 ; i < pagedata.length ; i++) {
@@ -77,7 +87,7 @@ function initializePresen(pageWidth, pageHeight, numOfThumbsInRow){
             x = defaultX +
                (Math.floor(i/Config.numOfPagesInThumbsPage) -
                 pager.currentThumbsPage) *
-               (thumbsPageWidth+pageWidth/2);
+               (thumbsPageWidth+pageWidth/4);
             y = defaultY;
             
             break;
@@ -95,6 +105,8 @@ function initializePresen(pageWidth, pageHeight, numOfThumbsInRow){
       pages[i].style.zIndex = 1000-i;
       pages[i].style.top  = (window.innerHeight-Config.pageHeight)/2;
       pages[i].style.left = (window.innerWidth-Config.pageWidth)/2;
+      pages[i].style.width = Config.pageWidth;
+      pages[i].style.height = Config.pageHeight;
       pages[i].addEventListener('click', (function(i){
          return function(e){
             pager.setPage(i);
@@ -103,7 +115,6 @@ function initializePresen(pageWidth, pageHeight, numOfThumbsInRow){
          }
       })(i), false);
       
-      // calculate standard positions for all pages
       var pagedatum = {
          page: pages[i],
          thumbPosX: 
@@ -126,6 +137,7 @@ function initializePresen(pageWidth, pageHeight, numOfThumbsInRow){
                                           Config.numOfPagesInThumbsPage),
                                Config.numOfPagesInThumbsPage);
 
+   translatePage();
    document.body.addEventListener("keyup", function(e){
       switch(e.keyCode) {
       case keymap.left:
