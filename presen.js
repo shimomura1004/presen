@@ -2,41 +2,52 @@ function init(){
    const Config = {
          'pageWidth':800, 'pageHeight':600,
          'intervalOfPages': 20,
-         'numOfThumbsInRow': 3
+         'numOfThumbsInRow': 3,
+         'numOfPagesInThumbsPage':9
    }
    const keymap = {'left':37, 'up':38, 'right':39, 'down':40};
    var pagedata;
    var currentPage = 0;
+   var currentThumbsPage = 0;
 
    const viewMode   = 0;
    const thumbsMode = 1;
    var currentMode = viewMode;
 
-   function setPageTo(idx, scale){
-      scale = scale ? scale : 1;
-
+   function translatePage() {
       for (var i=0 ; i < pagedata.length ; i++) {
-         pagedata[i].page.style.webkitTransform = 
-            "scale("+scale+") translate("+
-            ((Config.pageWidth+Config.intervalOfPages) * (i-idx))+"px, 0px)";
+         const pageWidth = Config.pageWidth + Config.intervalOfPages;
+         const thumbsPageWidth = pageWidth * (Config.numOfThumbsInRow);
+
+         var x, y;
+         var scale;
+         switch (currentMode) {
+         case viewMode:
+            x = pageWidth * (i-currentPage);
+            y = pagedata[i].posY;
+            scale = 1;
+            
+            break;
+         case thumbsMode:
+            defaultX = pagedata[i].thumbPosX;
+            defaultY = pagedata[i].thumbPosY;
+            scale = 1/Config.numOfThumbsInRow;
+
+            x = defaultX +
+               (Math.floor(i/Config.numOfPagesInThumbsPage) -
+                currentThumbsPage) *
+               (thumbsPageWidth+pageWidth/2);
+            y = defaultY;
+            
+            break;
+         }
+
+         pagedata[i].page.style.webkitTransform =
+            "scale("+scale+") translate("+x+"px, "+y+"px)";
       }
    }
 
-
-   function adjustPagePositions(xname, yname, scale){
-      scale = scale ? scale : 1;
-
-      for (var i=0 ; i < pagedata.length ; i++) {
-         pagedata[i].page.style.webkitTransform = 
-            "scale("+scale+") translate("+
-            pagedata[i][xname]+"px, "+pagedata[i][yname]+"px)";
-      }
-   }
-
-   
    pages = document.getElementsByClassName('page');
-   var numOfPagesInThumbsPage =
-      Config.numOfThumbsInRow * Config.numOfThumbsInRow;
    pagedata = new Array(pages.length);
 
    for (var i=0 ; i < pages.length ; i++) {
@@ -44,52 +55,64 @@ function init(){
       pages[i].style.top  = (window.innerHeight-Config.pageHeight)/2;
       pages[i].style.left = (window.innerWidth-Config.pageWidth)/2;
       
+      // calculate standard positions for all pages
       var pagedatum = {
          page: pages[i],
          posX: (Config.pageWidth + Config.intervalOfPages) * i,
          posY: 0,
-         thumbPosX:
-         Math.floor(i / numOfPagesInThumbsPage) *
-            (Config.pageWidth*(Config.numOfThumbsInRow+0.5)) +
-            (Config.pageWidth + Config.intervalOfPages)*(i%Config.numOfThumbsInRow-1),
+         thumbPosX: 
+            (Config.pageWidth + Config.intervalOfPages) *
+            (i%Config.numOfThumbsInRow - 1),
          thumbPosY:
             (Config.pageHeight + Config.intervalOfPages) *
-            (Math.floor((i % numOfPagesInThumbsPage) / Config.numOfThumbsInRow) - 1)
+            (Math.floor((i % Config.numOfPagesInThumbsPage) /
+                        Config.numOfThumbsInRow) - 1)
       };
       pages[i].style.webkitTransform = 
          "scale(1) translate("+pagedatum.posX+"px, "+pagedatum.posY+"px)";
-      
+
+
       pagedata[i] = pagedatum;
    }
 
    document.body.addEventListener("keyup", function(e){
       switch(e.keyCode) {
-         case keymap.left:
+      case keymap.left:
          if (currentMode == viewMode) {
             if (currentPage > 0) {
                currentPage -= 1;
             }
-            setPageTo(currentPage);
+         } else if (currentMode == thumbsMode) {
+            if (currentThumbsPage > 0) {
+               currentThumbsPage -= 1;
+            }
          }
+         translatePage();
          break;
 
-         case keymap.right:
+      case keymap.right:
          if (currentMode == viewMode) {
             if (currentPage < pagedata.length-1) {
                currentPage += 1;
             }
-            setPageTo(currentPage);
+         } else if (currentMode == thumbsMode) {
+            if (currentThumbsPage <
+                Math.floor(pagedata.length/
+                           Config.numOfPagesInThumbsPage)) {
+                              currentThumbsPage += 1;
+                           }
          }
+         translatePage();
          break;
 
-         case keymap.up:
+      case keymap.up:
          currentMode = thumbsMode;
-         adjustPagePositions("thumbPosX", "thumbPosY", 1/Config.numOfThumbsInRow);
+         translatePage();
          break;
 
-         case keymap.down:
+      case keymap.down:
          currentMode = viewMode;
-         setPageTo(currentPage);
+         translatePage();
          break;
       }
    }, false);
