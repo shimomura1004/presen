@@ -1,5 +1,6 @@
 var animation;
 var pager;
+var isIPhone = WebKitDetect.isMobile();
 
 /** ページごとのアニメーションを管理するクラス
  */
@@ -168,15 +169,14 @@ function initializePresen
       pages[i].style.left = (window.innerWidth-Config.pageWidth)/2;
       pages[i].style.width = Config.pageWidth;
       pages[i].style.height = Config.pageHeight;
-      pages[i].addEventListener('click', (function(i){
+      pages[i].onclick = (function(i){
          return function(e){
             pager.setPage(i);
             animation.prepareAction(pager.currentPage);
             currentMode = viewMode;
             translatePage();
          }
-      })(i), false);
-      
+      })(i);
 
       var pagedatum = {
          page: pages[i],
@@ -201,37 +201,144 @@ function initializePresen
 
 
    translatePage();
-   document.body.addEventListener("keyup", function(e){
-      switch(e.keyCode) {
-      case keymap.left:
-         if (currentMode == viewMode) {
-            animation.stepBackPrevAction();
-         } else if (currentMode == thumbsMode) {
-            pager.prevThumbsPage();
-         }
-         translatePage();
-         break;
 
-      case keymap.right:
-         if (currentMode == viewMode) {
-            animation.doNextAction();
-         } else if (currentMode == thumbsMode) {
-            pager.nextThumbsPage();
-         }
-         translatePage();
-         break;
 
-      case keymap.up:
-         currentMode = thumbsMode;
-         translatePage();
-         break;
+   if (isIPhone) {
+      document.body.style.width  = Config.pageWidth+100;
+      document.body.style.height = Config.pageHeight+200;
+      setTimeout(function(){window.scrollTo(0,1);}, 200);
+   }
 
-      case keymap.down:
-         animation.prepareAction(this.currentPage);
-         pager.setPage(pager.currentPage);
-         currentMode = viewMode;
-         translatePage();
-         break;
+
+   function pushLeft(){
+      if (currentMode == viewMode) {
+         animation.stepBackPrevAction();
+      } else if (currentMode == thumbsMode) {
+         pager.prevThumbsPage();
       }
-   }, false);
+      translatePage();
+   }
+   function pushRight(){
+      if (currentMode == viewMode) {
+         animation.doNextAction();
+      } else if (currentMode == thumbsMode) {
+         pager.nextThumbsPage();
+      }
+      translatePage();
+   }
+   function pushUp(){
+      currentMode = thumbsMode;
+      translatePage();
+   }
+   function pushDown(){
+      animation.prepareAction(this.currentPage);
+      pager.setPage(pager.currentPage);
+      currentMode = viewMode;
+      translatePage();
+   }
+
+   if (!isIPhone) {
+      document.body.addEventListener("keyup", function(e){
+         switch(e.keyCode) {
+         case keymap.left:
+            pushLeft();
+            break;
+         case keymap.right:
+            pushRight();
+            break;
+         case keymap.up:
+            pushUp();
+            break;
+         case keymap.down:
+            pushDown();
+            break;
+         }
+      }, false);
+   } else {
+      var oX = 0;
+      var oY = 0;
+      var touching = false;
+      var scrollX = 0;
+      var scrollY = 0;
+      var target;
+      function touchHandler(e) {
+         if (e.type == "touchstart") {
+            e.preventDefault();
+
+            touching = true;
+            if (e.touches.length == 1) {
+               var touch = e.touches[0];
+               target = touch.target;
+
+               oX = touch.pageX;
+               oY = touch.pageY;
+               nX = 0;
+               nY = 0;
+               scrollX = 0;
+               scrollY = 0;
+            }
+         }
+         // If the user has touched the screen and moved the finger
+         else if (e.type == "touchmove") {
+            if (e.touches.length == 1) {
+               e.preventDefault();
+               var touch = e.touches[0];
+               var nX = touch.pageX;
+               var nY = touch.pageY;
+               
+               // If the user moved the finger from the right to the left
+               if (oX > nX) {
+                  var scrollX = oX-nX;
+                  if (scrollX > 100) {
+                     if (touching == true) {
+                        touching = false;
+                        pushRight();
+                     }
+                  }
+               } else {
+                  // If the user moved the finger from the left to the right
+                  var scrollX = nX-oX;
+                  if (scrollX > 100) {
+                     if (touching == true) {
+                        touching = false;
+                        pushLeft();
+                     }
+                  }
+               }
+               if (oY > nY) {
+                  var scrollY = oY-nY;
+                  if (scrollY > 100) {
+                     if (touching == true) {
+                        touching = false;
+                        pushUp();
+                     }
+                  }
+               } else {
+                  var scrollY = nY-oY;
+                  if (scrollY > 100) {
+                     if (touching == true) {
+                        touching = false;
+                        pushDown();
+                     }
+                  }
+               }
+            }
+         } else if (e.type == "touchend") {
+            if(touching){
+               alert(target.onclick);
+               if(target.onclick){
+                  target.onclick();
+               }
+            }
+            touching = false;
+         } else if (e.type == "touchcancel") {
+            touching = false;
+         }
+      }
+
+      document.body.addEventListener('touchstart', touchHandler, false);
+      document.body.addEventListener('touchmove', touchHandler, false);
+      document.body.addEventListener('touchend', touchHandler, false);
+      document.body.addEventListener('touchcancel', touchHandler, false);
+   }
 }
