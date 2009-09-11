@@ -18,11 +18,11 @@ div.title {
     text-align: center;
 }
 body {
-    font-size: 30pt;
+    font-size: 24pt;
     background-color: black;
 }
 h1 {
-    font-size: 60px;
+    font-size: 40px;
 }
     </style>
     <script type="text/javascript">
@@ -56,19 +56,23 @@ function setup1(){
     </script>
     <!-- ======================================== -->
     <div class="page">
+      <h1>JavaScript + CSS でプレゼンする</h1>
+    </div>
+    <!-- ======================================== -->
+    <div class="page">
       <h1>CSS によるアニメーション</h1>
       <ul>
-        <li>CSS で アニメーションを指定</li>
+        <li>CSS でアニメーションを指定</li>
         <ul>
           <li>transition-property: opacity 1s linear;</li>
           <li>opacity の変化は線形に1秒かけておこなう</li>
         </ul>
         <li>あとは JavaScript でスタイルの値を変更するだけ！</li>
+        <ul>
+          <li>$("#picture").css("opacity", "0")</li>
+          <li>1秒かけて透明になっていく</li>
+        </ul>
       </ul>
-    </div>
-    <!-- ======================================== -->
-    <div class="page">
-      <h1>Third Page</h1>
     </div>
     <!-- ======================================== -->
     <div class="page">
