@@ -5,6 +5,16 @@ var isIPhone = WebKitDetect.isMobile();
 /** ページごとのアニメーションを管理するクラス
  */
 function PresenAnimater(){
+   this.parseEasyTransition = function(action){
+      for(var i=0 ; i < action.length ; i++) {
+         if (typeof(action[i].target)=="string") {
+            $(action[i].target).css(action[i].attribute, action[i].value);
+         } else {
+            action[i].target.style[action[i].attribute] = action[i].value;
+         }
+      }
+   }
+
    this.pointer = 0;
    this.actionStack = [];        // ページごとの動作リストのリスト
    this.backActionStack = [];    // ページごとの戻り動作リストのリスト
@@ -27,7 +37,12 @@ PresenAnimater.prototype.doNextAction = function(){
       pager.gotoNextPage();
       this.pointer = 0;
    } else {
-      this.currentPageAction[this.pointer]();
+      var action = this.currentPageAction[this.pointer];
+      if(typeof(action)=="function"){
+         action();
+      } else {
+         this.parseEasyTransition(action);
+      }
       this.pointer += 1;
    }
 }
@@ -39,7 +54,12 @@ PresenAnimater.prototype.stepBackPrevAction = function(){
       }
    } else {
       this.pointer -= 1;
-      this.currentPageBackAction[this.pointer]();
+      var action = this.currentPageBackAction[this.pointer];
+      if(typeof(action)=="function"){
+         action();
+      } else {
+         this.parseEasyTransition(action);
+      }
    }
 }
 // set actions for current page
@@ -351,4 +371,5 @@ function initializePresen
    }
 
    translatePage();
+   setTimeout(pushUp, 200);
 }
