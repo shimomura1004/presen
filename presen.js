@@ -130,10 +130,6 @@ function initializePresen
          var scale;
          switch (currentMode) {
          case viewMode:
-            widthRatio  = window.innerWidth / pageWidth;
-            heightRatio = window.innerHeight / pageHeight;
-            scale = Math.min(widthRatio, heightRatio) * 0.9;
-
             if (!isIPhone) {
                x = pageWidth * (i-pager.currentPage);
                y = 0;
@@ -141,6 +137,9 @@ function initializePresen
                x = pageWidth * (i-pager.currentPage);
                y = Config.pageHeight/10;
             }
+            widthRatio  = window.innerWidth / pageWidth;
+            heightRatio = window.innerHeight / pageHeight;
+            scale = Math.min(widthRatio, heightRatio) * 0.9;
 
             break;
          case thumbsMode:
@@ -157,9 +156,7 @@ function initializePresen
                   (Math.floor(i/Config.numOfPagesInThumbsPage) -
                    pager.currentThumbsPage) *
                   (thumbsPageWidth + interval);
-               y = defaultY+
-               Config.pageHeight/10*Config.numOfThumbsInRow;
-//               Config.pageHeight/Config.numOfThumbsInRow;
+               y = defaultY+Config.pageHeight/10*Config.numOfThumbsInRow;
             }
             widthRatio  = window.innerWidth / pageWidth;
             heightRatio = window.innerHeight / pageHeight;
@@ -225,7 +222,6 @@ function initializePresen
       setTimeout(function(){window.scrollTo(0,1);}, 200);
    }
 
-   translatePage();
 
    function pushLeft(){
       if (currentMode == viewMode) {
@@ -353,4 +349,6 @@ function initializePresen
       document.body.addEventListener('touchend', touchHandler, false);
       document.body.addEventListener('touchcancel', touchHandler, false);
    }
+
+   translatePage();
 }
