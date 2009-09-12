@@ -130,6 +130,10 @@ function initializePresen
          var scale;
          switch (currentMode) {
          case viewMode:
+            widthRatio  = window.innerWidth / pageWidth;
+            heightRatio = window.innerHeight / pageHeight;
+            scale = Math.min(widthRatio, heightRatio) * 0.9;
+
             if (!isIPhone) {
                x = pageWidth * (i-pager.currentPage);
                y = 0;
@@ -137,8 +141,7 @@ function initializePresen
                x = pageWidth * (i-pager.currentPage);
                y = Config.pageHeight/10;
             }
-            scale = 1;
-            
+
             break;
          case thumbsMode:
             defaultX = pagedata[i].thumbPosX;
@@ -153,14 +156,16 @@ function initializePresen
                x = defaultX +
                   (Math.floor(i/Config.numOfPagesInThumbsPage) -
                    pager.currentThumbsPage) *
-                  (thumbsPageWidth + interval) +
-                  (window.innerWidth - Config.pageWidth)/2
-                  - pageWidth/10;
-               y = defaultY + (window.innerHeight - Config.pageHeight)/2
-                  + pageHeight/10;
+                  (thumbsPageWidth + interval);
+               y = defaultY+
+               Config.pageHeight/10*Config.numOfThumbsInRow;
+//               Config.pageHeight/Config.numOfThumbsInRow;
             }
-            scale = 1/Config.numOfThumbsInRow;
-            
+            widthRatio  = window.innerWidth / pageWidth;
+            heightRatio = window.innerHeight / pageHeight;
+            scale = Math.min(widthRatio, heightRatio) * 0.9 /
+                       Config.numOfThumbsInRow;
+
             break;
          }
 
