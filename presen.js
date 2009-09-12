@@ -130,21 +130,36 @@ function initializePresen
          var scale;
          switch (currentMode) {
          case viewMode:
-            x = pageWidth * (i-pager.currentPage);
-            y = 0;
+            if (!isIPhone) {
+               x = pageWidth * (i-pager.currentPage);
+               y = 0;
+            } else {
+               x = pageWidth * (i-pager.currentPage);
+               y = Config.pageHeight/10;
+            }
             scale = 1;
             
             break;
          case thumbsMode:
             defaultX = pagedata[i].thumbPosX;
             defaultY = pagedata[i].thumbPosY;
+            if (!isIPhone){
+               x = defaultX +
+                  (Math.floor(i/Config.numOfPagesInThumbsPage) -
+                   pager.currentThumbsPage) *
+                  (thumbsPageWidth + interval);
+               y = defaultY;
+            } else {
+               x = defaultX +
+                  (Math.floor(i/Config.numOfPagesInThumbsPage) -
+                   pager.currentThumbsPage) *
+                  (thumbsPageWidth + interval) +
+                  (window.innerWidth - Config.pageWidth)/2
+                  - pageWidth/10;
+               y = defaultY + (window.innerHeight - Config.pageHeight)/2
+                  + pageHeight/10;
+            }
             scale = 1/Config.numOfThumbsInRow;
-
-            x = defaultX +
-               (Math.floor(i/Config.numOfPagesInThumbsPage) -
-                pager.currentThumbsPage) *
-               (thumbsPageWidth + interval);
-            y = defaultY;
             
             break;
          }
@@ -199,16 +214,13 @@ function initializePresen
    }
 
 
-
-   translatePage();
-
-
    if (isIPhone) {
       document.body.style.width  = Config.pageWidth+100;
-      document.body.style.height = Config.pageHeight+200;
+      document.body.style.height = Config.pageHeight+100;
       setTimeout(function(){window.scrollTo(0,1);}, 200);
    }
 
+   translatePage();
 
    function pushLeft(){
       if (currentMode == viewMode) {
@@ -264,7 +276,6 @@ function initializePresen
       function touchHandler(e) {
          if (e.type == "touchstart") {
             e.preventDefault();
-
             touching = true;
             if (e.touches.length == 1) {
                var touch = e.touches[0];
@@ -278,7 +289,6 @@ function initializePresen
                scrollY = 0;
             }
          }
-         // If the user has touched the screen and moved the finger
          else if (e.type == "touchmove") {
             if (e.touches.length == 1) {
                e.preventDefault();
@@ -286,7 +296,6 @@ function initializePresen
                var nX = touch.pageX;
                var nY = touch.pageY;
                
-               // If the user moved the finger from the right to the left
                if (oX > nX) {
                   var scrollX = oX-nX;
                   if (scrollX > 100) {
@@ -296,7 +305,6 @@ function initializePresen
                      }
                   }
                } else {
-                  // If the user moved the finger from the left to the right
                   var scrollX = nX-oX;
                   if (scrollX > 100) {
                      if (touching == true) {
@@ -325,7 +333,6 @@ function initializePresen
             }
          } else if (e.type == "touchend") {
             if(touching){
-               alert(target.onclick);
                if(target.onclick){
                   target.onclick();
                }
