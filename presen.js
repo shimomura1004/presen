@@ -7,10 +7,10 @@ var isIPhone = WebKitDetect.isMobile();
 function PresenAnimater(){
    this.parseEasyTransition = function(action){
       for(var i=0 ; i < action.length ; i++) {
-         if (typeof(action[i].target)=="string") {
-            $(action[i].target).css(action[i].attribute, action[i].value);
+         if (typeof(action[i][0])=="string") {
+            $(action[i][0]).css(action[i][1], action[i][2]);
          } else {
-            action[i].target.style[action[i].attribute] = action[i].value;
+            action[i][0].style[action[i][1]] = action[i][2];
          }
       }
    }

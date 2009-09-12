@@ -1,3 +1,4 @@
+<!-- check css animation -->
 <html>
   <head>
     <title>CSS+JS DE PRESEN</title>
@@ -42,44 +43,40 @@ function init(){
     <div class="page title">
       <h1>Make a presentation<br/>with JavaScript and CSS</h1>
       <img id="dogpic" src="dog.jpg"
-           style="width: 400px; opacity:1;
-                  -webkit-perspective: 800;
-                  -webkit-perspective-origin: 50% 200px;
-                  -webkit-transition-property: -webkit-transform, opacity;
-                  -webkit-transition-duration: 2s, 1s;"/>
+           class="disolveAction"
+           style="width: 400px; opacity:1;"/>
       <p style="font-size: 16pt;">Inspired by Amachang :)</p>
     </div>
     <script>
 animation.setActions( 0,
-  [function(){$("#dogpic").css("opacity", "0").
-      css("-webkit-transform", "rotatez(180deg)")}],
-  [function(){$("#dogpic").css("opacity", "1").
-      css("-webkit-transform", "rotateX(0deg)")}]);
+   [[["#dogpic", "opacity", "0"],
+     ["#dogpic", "-webkit-transform", "scale(3)"]]],
+   [[["#dogpic", "opacity", "1"],
+     ["#dogpic", "-webkit-transform", "scale(1)"]]]);
     </script>
     <!-- ======================================== -->
     <div class="page">
       <h1>JavaScript + CSS でプレゼンする</h1>
       <h2>なんで JavaScript + CSS なの？</h2>
       <ul>
-        <li class="whyjs" id="whyjs1" style="opacity: 0;">
+        <li class="fadeFastAction" id="whyjs1" style="opacity: 0;">
           どこでもテキストエディタだけで編集できる</li>
-        <li class="whyjs" id="whyjs2" style="opacity: 0;">
+        <li class="fadeFastAction" id="whyjs2" style="opacity: 0;">
           ブラウザで見ることができるので<br>ファイルを持ち歩く必要がない</li>
-        <li class="whyjs" id="whyjs3" style="opacity: 0;">
+        <li class="fadeSlowAction" id="whyjs3" style="opacity: 0;">
           iPhoneOS や Android など<br>
           Webkit ベースのブラウザを搭載したモバイル端末でも<br>
           <font color="red">高速に</font>動作する！</li>
       </ul>
     </div>
-    <style>.whyjs { -webkit-transition: opacity 0.5s linear; }</style>
     <script>
 animation.setActions(1,
-   [[{target:"#whyjs1", attribute:"opacity", value:"1"}],
-    [{target:"#whyjs2", attribute:"opacity", value:"1"}],
-    [{target:"#whyjs3", attribute:"opacity", value:"1"}]],
-   [[{target:"#whyjs1", attribute:"opacity", value:"0"}],
-    [{target:"#whyjs2", attribute:"opacity", value:"0"}],
-    [{target:"#whyjs3", attribute:"opacity", value:"0"}]]);
+   [[["#whyjs1", "opacity", "1"]],
+    [["#whyjs2", "opacity", "1"]],
+    [["#whyjs3", "opacity", "1"]]],
+   [[["#whyjs1", "opacity", "0"]],
+    [["#whyjs2", "opacity", "0"]],
+    [["#whyjs3", "opacity", "0"]]]);
     </script>
     <!-- ======================================== -->
     <div class="page">

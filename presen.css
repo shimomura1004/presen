@@ -9,3 +9,18 @@ div.page {
 body {
     overflow: hidden;
 }
+
+.fadeFastAction {
+    -webkit-transition: opacity 0.5s linear;
+}
+.fadeAction {
+    -webkit-transition: opacity 1s linear;
+}
+.fadeSlowAction {
+    -webkit-transition: opacity 2s linear;
+}
+
+.disolveAction {
+    -webkit-transition-property: -webkit-transform, opacity;
+    -webkit-transition-duration: 1s, 1s;
+}
