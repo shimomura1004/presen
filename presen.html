@@ -33,7 +33,7 @@ h2 {
     </style>
     <script type="text/javascript">
 function init(){
-   initializePresen(800, 600, 2, 100);
+   initializePresen(800, 600, 2);
 }
     </script>
   </head>
@@ -44,7 +44,8 @@ function init(){
       <h1 style="font-size: 50pt;">
         <br>
         Make a presentation<br/>with JavaScript and CSS</h1>
-      <p style="font-size: 16pt;">Inspired by Amachang :)</p>
+      <p style="font-size: 16pt;">By <a href="http://d.hatena.ne.jp/zyxwv/">id:zyxwv</a></p>
+      <p style="font-size: 16pt;">Inspired by <a href="http://d.hatena.ne.jp/amachang/">id:amachang</a> :)</p>
     </div>
     <script>
     </script>
@@ -57,49 +58,71 @@ function init(){
           どこでもテキストエディタだけで編集できる</li>
         <li class="fadeFastAction" id="whyjs2" style="opacity: 0;">
           ブラウザで見ることができるので<br>ファイルを持ち歩く必要がない</li>
+        <li class="fadeFastAction" id="whyjs3" style="opacity: 0;">
+          共有が楽ちん</li>
       </ul>
-      <p class="fadeFastAction" id="whyjs3" style="opacity: 0;">
+      <p class="fadeFastAction" id="whyjs4" style="opacity: 0;">
         なら s6 でいいじゃんという話ですが…</p>
-      <p class="disolveAction" id="whyjs4"
+      <p class="disolveAction" id="whyjs5"
          style="opacity: 0; -webkit-transform: scale(0.1); text-align: center;">
         iPhoneOS や Android など<br>
         Webkit ベースのブラウザを搭載したモバイル端末で<br>
-        <font color="red">高速に</font>動作します！<br>
-        (たぶん)</<p></p>
+        (たぶん)<font color="red">高速に</font>動作します！</p>
     </div>
     <script>
 animation.setActions(1,
    [[["#whyjs1", "opacity", "1"]],
     [["#whyjs2", "opacity", "1"]],
     [["#whyjs3", "opacity", "1"]],
-    [["#whyjs4", "opacity", "1"],
-     ["#whyjs4", "-webkit-transform","scale(1)"]]],
+    [["#whyjs4", "opacity", "1"]],
+    [["#whyjs5", "opacity", "1"],
+     ["#whyjs5", "-webkit-transform","scale(1)"]]],
    [[["#whyjs1", "opacity", "0"]],
     [["#whyjs2", "opacity", "0"]],
     [["#whyjs3", "opacity", "0"]],
-    [["#whyjs4", "opacity", "0"],
-     ["#whyjs4","-webkit-transform","scale(0.1)"]]]);
+    [["#whyjs4", "opacity", "0"]],
+    [["#whyjs5", "opacity", "0"],
+     ["#whyjs5","-webkit-transform","scale(0.1)"]]]);
     </script>
     <!-- ======================================== -->
     <div class="page">
-      
+      <h1>アニメーションの設定</h1>
+      <ol>
+        <li>
+          <p>CSS でアニメーションを指定</p>
+          <div id="configAnimation1" class="fadeFastAction"
+               style="background-color: skyblue; border: 2px solid blue; margin-left: 20px; margin-right: 100px; opacity:0;">
+            <a style="font-size: 16pt;">/* opacity の変化は線形に1秒かけておこなう */</a><br>
+            <a>transition-property: opacity 1s linear;</a>
+          </div>
+        </li>
+        <li>
+          <p>あとは JavaScript でスタイルの値を変更するだけ！</p>
+          <div id="configAnimation2" class="fadeFastAction"
+               style="background-color: skyblue; border: 2px solid blue; margin-left: 20px; margin-right: 100px; opacity: 0;">
+            <a style="font-size: 16pt;">// id が 'picture' の要素が1秒かけて透明になります</a><br>
+            <a>$("#picture").css("opacity", "0")</a>
+          </div>
+        </li>
+        <li>
+          <p>動作には任意の JavaScript の関数が設定できます</p>
+          <div id="configAnimation3" class="fadeFastAction"
+               style="background-color: skyblue; border: 2px solid blue; margin-left: 20px; margin-right: 100px; opacity: 0;">
+            <a style="font-size: 16pt;">// 見直しのために経過時間を記録</a><br>
+            <a>recorder.push(new Date())</a>
+          </div>
+        </li>
+      </ol>
     </div>
-    <!-- ======================================== -->
-    <div class="page">
-      <h1>CSS によるアニメーション</h1>
-      <ul>
-        <li>CSS でアニメーションを指定</li>
-        <ul>
-          <li>transition-property: opacity 1s linear;</li>
-          <li>opacity の変化は線形に1秒かけておこなう</li>
-        </ul>
-        <li>あとは JavaScript でスタイルの値を変更するだけ！</li>
-        <ul>
-          <li>$("#picture").css("opacity", "0")</li>
-          <li>1秒かけて透明になっていく</li>
-        </ul>
-      </ul>
-    </div>
+    <script>
+      animation.setActions(2,
+      [[["xpath://div[@id='configAnimation1']", "opacity", "1"]],
+       [["xpath://div[@id='configAnimation2']", "opacity", "1"]],
+       [["xpath://div[@id='configAnimation3']", "opacity", "1"]]],
+      [[["xpath://div[@id='configAnimation1']", "opacity", "0"]],
+       [["xpath://div[@id='configAnimation2']", "opacity", "0"]],
+       [["xpath://div[@id='configAnimation3']", "opacity", "0"]]]);
+    </script>
     <!-- ======================================== -->
     <div class="page">
       <h1>HTML なのでいろいろできます</h1>
@@ -110,6 +133,8 @@ animation.setActions(1,
       </ul>
       <div style="margin: 5px; text-align: center;">
         <video height="50%" id="video" controls="true" src="http://movies.apple.com/media/us/ipoditunes/nano/2009/ads/apple-ipodnano-ad-capture-us-20090909_r640-9cie.mov">
+          This browser doesn't support video tag
+        </video>
       </div>
       <p style="font-size: 16pt; text-align: right;">
         MobileSafari だと崩れるみたいですが…</p>
@@ -117,7 +142,20 @@ animation.setActions(1,
     <script>if(isIPhone){$("#video").css("display","none");}</script>
     <!-- ======================================== -->
     <div class="page">
-      <h1>Last Page</h1>
+      <h1>制限など</h1>
+      <ul>
+        <li>
+          クロスブラウザではありません<br>
+          <a style="font-size: 14pt;">Safari や Chrome など、Webkit 系のブラウザでのみ動作確認</a>
+        </li>
+        <li>
+          アニメーションの指定方法が煩雑<br>
+          <a style="font-size: 14pt;">複雑な動きをさせる場合には CSS を自分で書きます</a>
+        </li>
+        <li>ドキュメントは特にありません<br>
+          <a style="font-size: 14pt;">興味があったらソース読んでね！汚いけど :)</a>
+        </li>
+      </ul>
     </div>
     <!-- ======================================== -->
   </body>

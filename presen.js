@@ -7,10 +7,19 @@ var isIPhone = WebKitDetect.isMobile();
 function PresenAnimater(){
    this.parseEasyTransition = function(action){
       for(var i=0 ; i < action.length ; i++) {
-         if (typeof(action[i][0])=="string") {
-            $(action[i][0]).css(action[i][1], action[i][2]);
+         var act = action[i];
+         if (typeof(act[0])=="string") {
+            if(act[0].slice(0,6)=="xpath:"){
+               var targets = document.evaluate(act[0].slice(6), document,
+                                               null, 7, null);
+               for (var j=0 ; j < targets.snapshotLength ; j++){
+                  targets.snapshotItem(j).style[act[1]] = act[2];
+               }
+            } else {
+               $(act[0]).css(act[1], act[2]);
+            }
          } else {
-            action[i][0].style[action[i][1]] = action[i][2];
+            act[0].style[act[1]] = act[2];
          }
       }
    }
@@ -129,6 +138,7 @@ pager     = new PresenPager();
 
 function initializePresen
 (pageWidth, pageHeight, numOfThumbsInRow, interval){
+   interval = interval?interval:100;
    const Config = {
          'pageWidth': pageWidth,
          'pageHeight': pageHeight,
