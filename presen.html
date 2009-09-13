@@ -57,20 +57,28 @@ function init(){
           どこでもテキストエディタだけで編集できる</li>
         <li class="fadeFastAction" id="whyjs2" style="opacity: 0;">
           ブラウザで見ることができるので<br>ファイルを持ち歩く必要がない</li>
-        <li class="fadeSlowAction" id="whyjs3" style="opacity: 0;">
-          iPhoneOS や Android など<br>
-          Webkit ベースのブラウザを搭載したモバイル端末で<br>
-          <font color="red">高速に</font>動作する！</li>
       </ul>
+      <p class="fadeFastAction" id="whyjs3" style="opacity: 0;">
+        なら s6 でいいじゃんという話ですが…</p>
+      <p class="disolveAction" id="whyjs4"
+         style="opacity: 0; -webkit-transform: scale(0.1); text-align: center;">
+        iPhoneOS や Android など<br>
+        Webkit ベースのブラウザを搭載したモバイル端末で<br>
+        <font color="red">高速に</font>動作します！<br>
+        (たぶん)</<p></p>
     </div>
     <script>
 animation.setActions(1,
    [[["#whyjs1", "opacity", "1"]],
     [["#whyjs2", "opacity", "1"]],
-    [["#whyjs3", "opacity", "1"]]],
+    [["#whyjs3", "opacity", "1"]],
+    [["#whyjs4", "opacity", "1"],
+     ["#whyjs4", "-webkit-transform","scale(1)"]]],
    [[["#whyjs1", "opacity", "0"]],
     [["#whyjs2", "opacity", "0"]],
-    [["#whyjs3", "opacity", "0"]]]);
+    [["#whyjs3", "opacity", "0"]],
+    [["#whyjs4", "opacity", "0"],
+     ["#whyjs4","-webkit-transform","scale(0.1)"]]]);
     </script>
     <!-- ======================================== -->
     <div class="page">
