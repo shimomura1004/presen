@@ -23,8 +23,10 @@ function PresenAnimater(){
 }
 PresenAnimater.prototype.init = function(numOfPages){
    for (var i=0; i < numOfPages ; i++) {
-      this.actionStack.push([]);
-      this.backActionStack.push([]);
+      if (!this.actionStack[i]) {
+         this.actionStack[i] = [];
+         this.backActionStack[i] = [];
+      }
    }
 };
 PresenAnimater.prototype.setActions =
