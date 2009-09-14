@@ -1,0 +1,14 @@
+@page {
+    size: landscape;
+}
+div.page {
+    border: 1px solid black;
+    background-color: white;
+    page-break-after: always;
+    width:800px;
+    height:600px;
+}
+
+* {
+    opacity:1.0 !IMPORTANT;
+}
