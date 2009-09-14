@@ -2,6 +2,30 @@ var s7;
 var pager;
 var isIPhone = WebKitDetect.isMobile();
 
+/* アニメーションを保持するクラス */
+function Zipper(elems){
+   this.leftStack  = [];
+   this.rightStack = elems.reverse();
+}
+Zipper.prototype.get = function(){
+   if (this.rightStack.length != 0){
+      return this.rightStack[this.rightStack.length-1];
+   } else {
+      return undefined;
+   }
+}
+Zipper.prototype.go = function(){
+   if (this.rightStack.length != 0){
+      this.leftStack.push(this.rightStack.pop());
+   }
+}
+Zipper.prototype.back = function(){
+   if (this.leftStack.length != 0){
+      this.rightStack.push(this.leftStack.pop());
+   }
+}
+
+
 /* ページごとのアニメーションを管理するクラス */
 function PresenAnimater(){
    this.parseEasyTransition = function(action){
@@ -23,11 +47,12 @@ function PresenAnimater(){
       }
    }
 
-   this.pointer = 0;
+//   this.pointer = 0;
    this.actionStack = [];        // ページごとの動作リストのリスト
    this.backActionStack = [];    // ページごとの戻り動作リストのリスト
-   this.currentPageAction = [];
-   this.currentPageBackAction = [];
+
+//   this.currentPageAction = [];
+//   this.currentPageBackAction = [];
 }
 PresenAnimater.prototype.init = function(numOfPages){
    for (var i=0; i < numOfPages ; i++) {
@@ -39,8 +64,12 @@ PresenAnimater.prototype.init = function(numOfPages){
 };
 PresenAnimater.prototype.setActions =
 function(pageIdx, actions, backActions){
+/*
    this.actionStack[pageIdx] = actions;
    this.backActionStack[pageIdx] = backActions;
+*/
+   this.actionStack[pageIdx] = new Zipper(actions);
+   this.backActionStack[pageIdx] = new Zipper(backActions);
 }
 PresenAnimater.prototype.doNextAction = function(){
    if (this.pointer == this.currentPageAction.length) {
