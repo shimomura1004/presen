@@ -1,18 +1,19 @@
 div.page {
     position: absolute;
 
-    -webkit-transition-property:
-      -webkit-transform, top, left;
-    -webkit-transition-duration:
-      1s, 1s, 1s;
-
-    -moz-transition-property:
-      -moz-transform, top, left;
-    -moz-transition-duration:
-      1s, 1s, 1s;
+    -webkit-transition-property: -webkit-transform;
+    -webkit-transition-duration: 1s
 }
+
 body {
+    -webkit-transform: scale(1);
     overflow: hidden;
+
+    -webkit-transition-property: -webkit-transform;
+    -webkit-transition-duration: 1s;
+
+    -moz-transition-property: -moz-transform;
+    -moz-transition-duration: 1s;
 }
 
 .fadeFastAction {

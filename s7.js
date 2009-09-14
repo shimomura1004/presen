@@ -1,3 +1,6 @@
+/*
+  ページ1つずつに transform を指定するのではなく、 body に指定できるようにする
+*/
 var s7;
 var pager;
 var isIPhone = WebKitDetect.isMobile();
@@ -164,62 +167,52 @@ function initializePresen
          'intervalOfPages': 20
    }
    const keymap = {'left':37, 'up':38, 'right':39, 'down':40};
-   var pagedata;
 
    const viewMode   = 0;
    const thumbsMode = 1;
+
+   widthRatio = window.innerWidth/(pageWidth+Config.intervalOfPages);
+   heightRatio = isIPhone?
+      (window.innerHeight+180)/(pageHeight+Config.intervalOfPages):
+      window.innerHeight/(pageHeight+Config.intervalOfPages);
+   const scale = Math.min(widthRatio, heightRatio) * 0.9;
+   const thumbScale = scale / Config.numOfThumbsInRow;
+
+   var pagedata;
    var currentMode = thumbsMode;
 
    function translatePage() {
+      const pageWidth = Config.pageWidth + Config.intervalOfPages;
+      const thumbsPageWidth = pageWidth * (Config.numOfThumbsInRow);
+
+      if (currentMode == viewMode) {
+         document.body.style.WebkitTransform = "scale("+scale+")";
+         document.body.style.MozTransform    = "scale("+scale+")";
+      } else {
+         document.body.style.WebkitTransform = "scale("+thumbScale+")";
+         document.body.style.MozTransform    = "scale("+thumbScale+")";
+      }
+
       for (var i=0 ; i < pagedata.length ; i++) {
-         const pageWidth = Config.pageWidth + Config.intervalOfPages;
-         const thumbsPageWidth = pageWidth * (Config.numOfThumbsInRow);
-
          var x, y;
-         var scale;
-         switch (currentMode) {
-         case viewMode:
-            if (!isIPhone) {
-               x = pageWidth * (i-pager.currentPage);
-               y = 0;
-            } else {
-               x = pageWidth * (i-pager.currentPage);
-               y = Config.pageHeight/10;
-            }
-            widthRatio  = window.innerWidth / pageWidth;
-            heightRatio = window.innerHeight / pageHeight;
-            scale = Math.min(widthRatio, heightRatio) * 0.9;
-
-            break;
-         case thumbsMode:
+         if (currentMode == viewMode) {
+            x = pageWidth * (i-pager.currentPage);
+            y = 0;
+         } else {
             defaultX = pagedata[i].thumbPosX;
             defaultY = pagedata[i].thumbPosY;
-            if (!isIPhone){
-               x = defaultX +
+            
+            x = defaultX +
                   (Math.floor(i/Config.numOfPagesInThumbsPage) -
                    pager.currentThumbsPage) *
                   (thumbsPageWidth + interval);
-               y = defaultY;
-            } else {
-               x = defaultX +
-                  (Math.floor(i/Config.numOfPagesInThumbsPage) -
-                   pager.currentThumbsPage) *
-                  (thumbsPageWidth + interval);
-               y = defaultY+Config.pageHeight/10*Config.numOfThumbsInRow;
-            }
-            widthRatio  = window.innerWidth / pageWidth;
-            heightRatio = window.innerHeight / pageHeight;
-            scale = Math.min(widthRatio, heightRatio) * 0.9 /
-                       Config.numOfThumbsInRow;
-
-            break;
+            y = defaultY;
          }
 
          pagedata[i].page.style.WebkitTransform =
-            "scale("+scale+") translate("+x+"px, "+y+"px)";
-
+            "translate("+x+"px, "+y+"px)";
          pagedata[i].page.style.MozTransform = 
-            "scale("+scale+") translate("+x+"px, "+y+"px)";
+            "translate("+x+"px, "+y+"px)";
       }
    }
 
@@ -231,10 +224,14 @@ function initializePresen
                          Config.numOfPagesInThumbsPage),
               Config.numOfPagesInThumbsPage);
 
-
    for (var i=0 ; i < pages.length ; i++) {
       pages[i].style.zIndex = 1000-i;
-      pages[i].style.top  = (window.innerHeight-Config.pageHeight)/2;
+      if(!isIPhone){
+         pages[i].style.top  = (window.innerHeight-Config.pageHeight)/2;
+      } else {
+         pages[i].style.top  = (window.innerHeight-Config.pageHeight)/2+
+            (Config.pageHeight/16);
+      }
       pages[i].style.left = (window.innerWidth-Config.pageWidth)/2;
       pages[i].style.width = Config.pageWidth;
       pages[i].style.height = Config.pageHeight;
@@ -257,14 +254,13 @@ function initializePresen
             (Config.pageHeight + Config.intervalOfPages) *
             (Math.floor(i%Config.numOfPagesInThumbsPage /
                         Config.numOfThumbsInRow) -
-             Config.numOfThumbsInRow/2),
+             Config.numOfThumbsInRow/2)
       };
-
       pages[i].style.webkitTransform = 
-         "scale(1) translate("+
+         "translate("+
          ((Config.pageWidth + Config.intervalOfPages) * i)+"px, 0px)";
       pages[i].style.MozTransform = 
-         "scale(1) translate("+
+         "translate("+
          ((Config.pageWidth + Config.intervalOfPages) * i)+"px, 0px)";
 
       pagedata[i] = pagedatum;
