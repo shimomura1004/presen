@@ -1,9 +1,8 @@
-var animation;
+var s7;
 var pager;
 var isIPhone = WebKitDetect.isMobile();
 
-/** ページごとのアニメーションを管理するクラス
- */
+/* ページごとのアニメーションを管理するクラス */
 function PresenAnimater(){
    this.parseEasyTransition = function(action){
       for(var i=0 ; i < action.length ; i++) {
@@ -79,6 +78,8 @@ PresenAnimater.prototype.prepareAction = function(pageIdx){
    this.currentPageBackAction = this.backActionStack[pageIdx];
 }
 
+
+
 /** ページ遷移を管理するクラス
  */
 function PresenPager(){ 
@@ -105,20 +106,20 @@ function(lastPage, lastThumbsPage, numOfThumbs){
 PresenPager.prototype.gotoNextPage = function(){
    if (this.currentPage < this.lastPage-1) {
       this.currentPage++;
-      animation.prepareAction(this.currentPage);
+      s7.prepareAction(this.currentPage);
       this.adjustThumbsPage();
    }
 };
 PresenPager.prototype.gotoPrevPage = function(){
    if (this.currentPage > 0) {
       this.currentPage--;
-      animation.prepareAction(this.currentPage);
+      s7.prepareAction(this.currentPage);
       this.adjustThumbsPage();
    }
 };
 PresenPager.prototype.setPage = function(idx){
    this.currentPage = idx;
-   animation.prepareAction(this.currentPage);
+   s7.prepareAction(this.currentPage);
    this.adjustThumbsPage();
 };
 PresenPager.prototype.nextThumbsPage = function(){
@@ -132,7 +133,7 @@ PresenPager.prototype.prevThumbsPage = function(){
    }
 };
 
-animation = new PresenAnimater();
+s7 = new PresenAnimater();
 pager     = new PresenPager();
 
 
@@ -208,7 +209,7 @@ function initializePresen
 
    pages = document.getElementsByClassName('page');
    pagedata = new Array(pages.length);
-   animation.init(pages.length);
+   s7.init(pages.length);
    pager.init(pagedata.length,
               Math.floor(pagedata.length /
                          Config.numOfPagesInThumbsPage),
@@ -224,7 +225,7 @@ function initializePresen
       pages[i].onclick = (function(i){
          return function(e){
             pager.setPage(i);
-            animation.prepareAction(pager.currentPage);
+            s7.prepareAction(pager.currentPage);
             currentMode = viewMode;
             translatePage();
          }
@@ -264,7 +265,7 @@ function initializePresen
 
    function pushLeft(){
       if (currentMode == viewMode) {
-         animation.stepBackPrevAction();
+         s7.stepBackPrevAction();
       } else if (currentMode == thumbsMode) {
          pager.prevThumbsPage();
       }
@@ -272,7 +273,7 @@ function initializePresen
    }
    function pushRight(){
       if (currentMode == viewMode) {
-         animation.doNextAction();
+         s7.doNextAction();
       } else if (currentMode == thumbsMode) {
          pager.nextThumbsPage();
       }
@@ -283,7 +284,7 @@ function initializePresen
       translatePage();
    }
    function pushDown(){
-      animation.prepareAction(this.currentPage);
+      s7.prepareAction(this.currentPage);
       pager.setPage(pager.currentPage);
       currentMode = viewMode;
       translatePage();
