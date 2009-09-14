@@ -1,6 +1,3 @@
-/*
-  ページ1つずつに transform を指定するのではなく、 body に指定できるようにする
-*/
 var s7;
 var pager;
 var isIPhone = WebKitDetect.isMobile();
@@ -38,6 +35,7 @@ Zipper.prototype.back = function(){
 /* ページごとのアニメーションを管理するクラス */
 function Animator(){
    this.actionStack = [];        // ページごとの動作リストのリスト
+
    this.parseEasyTransition = function(action){
       for(var i=0 ; i < action.length ; i++) {
          var act = action[i];
@@ -409,3 +407,28 @@ function initializePresen
    translatePage();
    setTimeout(pushUp, 200);
 }
+
+/* 簡単にエフェクトをかけるための関数群 */
+var s7effect = {
+   // 透明な状態から現れる
+   dissolveInFast:(function(target){
+      return function(){
+         $(target).addClass("fadeFastAction");
+         $(target).css("opacity", "1");
+         setTimeout(function(){
+            $(target).removeClass("fadeFastAction");
+         }, 500);
+      }
+   }),
+   // 透明になって消える
+   dissolveOutFast:(function(target){
+      return function(){
+         $(target).addClass("fadeFastAction");
+         $(target).css("opacity", "0");
+         setTimeout(function(){
+            $(target).removeClass("fadeFastAction");
+         }, 500);
+      }
+   }),
+   
+};
