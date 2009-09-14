@@ -198,7 +198,10 @@ function initializePresen
             break;
          }
 
-         pagedata[i].page.style.webkitTransform =
+         pagedata[i].page.style.WebkitTransform =
+            "scale("+scale+") translate("+x+"px, "+y+"px)";
+
+         pagedata[i].page.style.MozTransform = 
             "scale("+scale+") translate("+x+"px, "+y+"px)";
       }
    }
@@ -240,7 +243,11 @@ function initializePresen
                         Config.numOfThumbsInRow) -
              Config.numOfThumbsInRow/2),
       };
+
       pages[i].style.webkitTransform = 
+         "scale(1) translate("+
+         ((Config.pageWidth + Config.intervalOfPages) * i)+"px, 0px)";
+      pages[i].style.MozTransform = 
          "scale(1) translate("+
          ((Config.pageWidth + Config.intervalOfPages) * i)+"px, 0px)";
 
@@ -283,18 +290,22 @@ function initializePresen
    }
 
    if (!isIPhone) {
-      document.body.addEventListener("keyup", function(e){
+      document.addEventListener("keydown", function(e){
          switch(e.keyCode) {
          case keymap.left:
+            e.preventDefault();
             pushLeft();
             break;
          case keymap.right:
+            e.preventDefault();
             pushRight();
             break;
          case keymap.up:
+            e.preventDefault();
             pushUp();
             break;
          case keymap.down:
+            e.preventDefault();
             pushDown();
             break;
          }

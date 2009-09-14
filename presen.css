@@ -5,6 +5,11 @@ div.page {
       -webkit-transform, top, left;
     -webkit-transition-duration:
       1s, 1s, 1s;
+
+    -moz-transition-property:
+      -moz-transform, top, left;
+    -moz-transition-duration:
+      1s, 1s, 1s;
 }
 body {
     overflow: hidden;
@@ -12,15 +17,21 @@ body {
 
 .fadeFastAction {
     -webkit-transition: opacity 0.5s linear;
+    -moz-transition: opacity 0.5s linear;
 }
 .fadeAction {
     -webkit-transition: opacity 1s linear;
+    -moz-transition: opacity 1s linear;
 }
 .fadeSlowAction {
     -webkit-transition: opacity 2s linear;
+    -moz-transition: opacity 2s linear;
 }
 
 .disolveAction {
     -webkit-transition-property: -webkit-transform, opacity;
     -webkit-transition-duration: 1s, 1s;
+
+    -moz-transition-property: -moz-transform, opacity;
+    -moz-transition-duration: 1s, 1s;
 }

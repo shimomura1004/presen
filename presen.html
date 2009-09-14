@@ -9,13 +9,18 @@
           type="text/css" media="screen" />
     <script type="text/javascript" src="presen.js"></script>
 
-    <style type="text/css" media="screen">
+    <style type="text/css" media="screen,print">
 div.page {
     border: 5px solid white;
     -webkit-border-radius: 10px;
+
+    -moz-border-radius: 10px;
+
     background-image:
        -webkit-gradient(linear, left top, left bottom, from(white),
                         color-stop(0.1, white), to(rgb(205, 221, 241)));
+
+    background-color: white;
 }
 div.title {
     text-align: center;
@@ -64,7 +69,9 @@ function init(){
       <p class="fadeFastAction" id="whyjs4" style="opacity: 0;">
         なら s6 でいいじゃんという話ですが…</p>
       <p class="disolveAction" id="whyjs5"
-         style="opacity: 0; -webkit-transform: scale(0.1); text-align: center;">
+         style="opacity: 0; text-align: center;
+                -webkit-transform: scale(0.1);
+                -moz-transform: scale(0.1);">
         iPhoneOS や Android など<br>
         Webkit ベースのブラウザを搭載したモバイル端末で<br>
         (たぶん)<font color="red">高速に</font>動作します！</p>
