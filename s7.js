@@ -34,6 +34,7 @@ Zipper.prototype.back = function(){
 
 /* ページごとのアニメーションを管理するクラス */
 function Animator(){
+   this.actionStack = [];        // ページごとの動作リストのリスト
    this.parseEasyTransition = function(action){
       for(var i=0 ; i < action.length ; i++) {
          var act = action[i];
@@ -52,8 +53,6 @@ function Animator(){
          }
       }
    }
-
-   this.actionStack = [];        // ページごとの動作リストのリスト
 }
 Animator.prototype.init = function(numOfPages){
    for (var i=0; i < numOfPages ; i++) {
@@ -126,20 +125,17 @@ function(lastPage, lastThumbsPage, numOfThumbs){
 Pager.prototype.gotoNextPage = function(){
    if (this.currentPage < this.lastPage-1) {
       this.currentPage++;
-//      s7.prepareAction(this.currentPage);
       this.adjustThumbsPage();
    }
 };
 Pager.prototype.gotoPrevPage = function(){
    if (this.currentPage > 0) {
       this.currentPage--;
-//      s7.prepareAction(this.currentPage);
       this.adjustThumbsPage();
    }
 };
 Pager.prototype.setPage = function(idx){
    this.currentPage = idx;
-//   s7.prepareAction(this.currentPage);
    this.adjustThumbsPage();
 };
 Pager.prototype.nextThumbsPage = function(){
@@ -245,7 +241,6 @@ function initializePresen
       pages[i].onclick = (function(i){
          return function(e){
             pager.setPage(i);
-//            s7.prepareAction(pager.currentPage);
             currentMode = viewMode;
             translatePage();
          }
@@ -304,7 +299,6 @@ function initializePresen
       translatePage();
    }
    function pushDown(){
-//      s7.prepareAction(this.currentPage);
       pager.setPage(pager.currentPage);
       currentMode = viewMode;
       translatePage();
