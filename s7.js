@@ -7,27 +7,33 @@ function Zipper(elems){
    this.leftStack  = [];
    this.rightStack = elems.reverse();
 }
+Zipper.prototype.emptyLeft = function(){
+   return this.leftStack.length == 0;
+}
+Zipper.prototype.emptyRight = function(){
+   return this.rightStack.length == 0;
+}
 Zipper.prototype.get = function(){
-   if (this.rightStack.length != 0){
+   if (!this.emptyRight()){
       return this.rightStack[this.rightStack.length-1];
    } else {
       return undefined;
    }
 }
 Zipper.prototype.go = function(){
-   if (this.rightStack.length != 0){
+   if (!this.emptyRight()){
       this.leftStack.push(this.rightStack.pop());
    }
 }
 Zipper.prototype.back = function(){
-   if (this.leftStack.length != 0){
+   if (!this.emptyLeft()){
       this.rightStack.push(this.leftStack.pop());
    }
 }
 
 
 /* ページごとのアニメーションを管理するクラス */
-function PresenAnimater(){
+function Animator(){
    this.parseEasyTransition = function(action){
       for(var i=0 ; i < action.length ; i++) {
          var act = action[i];
@@ -47,71 +53,56 @@ function PresenAnimater(){
       }
    }
 
-//   this.pointer = 0;
    this.actionStack = [];        // ページごとの動作リストのリスト
-   this.backActionStack = [];    // ページごとの戻り動作リストのリスト
-
-//   this.currentPageAction = [];
-//   this.currentPageBackAction = [];
 }
-PresenAnimater.prototype.init = function(numOfPages){
+Animator.prototype.init = function(numOfPages){
    for (var i=0; i < numOfPages ; i++) {
       if (!this.actionStack[i]) {
-         this.actionStack[i] = [];
-         this.backActionStack[i] = [];
+         this.actionStack[i] = new Zipper([]);
       }
    }
-};
-PresenAnimater.prototype.setActions =
+}
+Animator.prototype.setActions =
 function(pageIdx, actions, backActions){
-/*
-   this.actionStack[pageIdx] = actions;
-   this.backActionStack[pageIdx] = backActions;
-*/
-   this.actionStack[pageIdx] = new Zipper(actions);
-   this.backActionStack[pageIdx] = new Zipper(backActions);
+   var tmp = [];
+   for (var i=0 ; i < actions.length ; i++) {
+      tmp.push([actions[i], backActions[i]]);
+   }
+   this.actionStack[pageIdx] = new Zipper(tmp);
 }
-PresenAnimater.prototype.doNextAction = function(){
-   if (this.pointer == this.currentPageAction.length) {
+Animator.prototype.doNextAction = function(){
+   var currentPageActions = this.actionStack[pager.currentPage];
+   if (currentPageActions.emptyRight()){
       pager.gotoNextPage();
-      this.pointer = 0;
    } else {
-      var action = this.currentPageAction[this.pointer];
-      if(typeof(action)=="function"){
-         action();
+      var theAction = (currentPageActions.get())[0];
+      if (typeof(theAction) == "function") {
+         theAction();
       } else {
-         this.parseEasyTransition(action);
+         this.parseEasyTransition(theAction);
       }
-      this.pointer += 1;
+      currentPageActions.go();
    }
 }
-PresenAnimater.prototype.stepBackPrevAction = function(){
-   if (this.pointer == 0) {
-      if(pager.currentPage != 0) {
-         pager.gotoPrevPage();
-         this.pointer = this.currentPageBackAction.length;
-      }
+Animator.prototype.stepBackPrevAction = function(){
+   var currentPageActions = this.actionStack[pager.currentPage];
+   if (currentPageActions.emptyLeft()) {
+      pager.gotoPrevPage();
    } else {
-      this.pointer -= 1;
-      var action = this.currentPageBackAction[this.pointer];
-      if(typeof(action)=="function"){
-         action();
+      currentPageActions = this.actionStack[pager.currentPage];
+      currentPageActions.back();
+      var theAction = (currentPageActions.get())[1];
+      if (typeof(theAction) == "function") {
+         theAction();
       } else {
-         this.parseEasyTransition(action);
+         this.parseEasyTransition(theAction);
       }
    }
 }
-// set actions for current page
-PresenAnimater.prototype.prepareAction = function(pageIdx){
-   this.currentPageAction     = this.actionStack[pageIdx];
-   this.currentPageBackAction = this.backActionStack[pageIdx];
-}
 
 
-
-/** ページ遷移を管理するクラス
- */
-function PresenPager(){ 
+/* ページ遷移を管理するクラス */
+function Pager(){ 
    this.adjustThumbsPage = function(){
       this.currentThumbsPage =
       Math.floor(this.currentPage / this.numOfThumbs);
@@ -124,7 +115,7 @@ function PresenPager(){
    this.currentThumbsPage = 0;
    return this;
 };
-PresenPager.prototype.init =
+Pager.prototype.init =
 function(lastPage, lastThumbsPage, numOfThumbs){
    this.lastPage = lastPage;
    this.lastThumbsPage = lastThumbsPage;
@@ -132,38 +123,38 @@ function(lastPage, lastThumbsPage, numOfThumbs){
    this.currentPage = 0;
    this.currentThumbsPage = 0;
 };
-PresenPager.prototype.gotoNextPage = function(){
+Pager.prototype.gotoNextPage = function(){
    if (this.currentPage < this.lastPage-1) {
       this.currentPage++;
-      s7.prepareAction(this.currentPage);
+//      s7.prepareAction(this.currentPage);
       this.adjustThumbsPage();
    }
 };
-PresenPager.prototype.gotoPrevPage = function(){
+Pager.prototype.gotoPrevPage = function(){
    if (this.currentPage > 0) {
       this.currentPage--;
-      s7.prepareAction(this.currentPage);
+//      s7.prepareAction(this.currentPage);
       this.adjustThumbsPage();
    }
 };
-PresenPager.prototype.setPage = function(idx){
+Pager.prototype.setPage = function(idx){
    this.currentPage = idx;
-   s7.prepareAction(this.currentPage);
+//   s7.prepareAction(this.currentPage);
    this.adjustThumbsPage();
 };
-PresenPager.prototype.nextThumbsPage = function(){
+Pager.prototype.nextThumbsPage = function(){
    if (this.currentThumbsPage < this.lastThumbsPage) {
       this.currentThumbsPage++;
    }
 };
-PresenPager.prototype.prevThumbsPage = function(){
+Pager.prototype.prevThumbsPage = function(){
    if (this.currentThumbsPage > 0) {
       this.currentThumbsPage--;
    }
 };
 
-s7 = new PresenAnimater();
-pager     = new PresenPager();
+s7    = new Animator();
+pager = new Pager();
 
 
 function initializePresen
@@ -254,7 +245,7 @@ function initializePresen
       pages[i].onclick = (function(i){
          return function(e){
             pager.setPage(i);
-            s7.prepareAction(pager.currentPage);
+//            s7.prepareAction(pager.currentPage);
             currentMode = viewMode;
             translatePage();
          }
@@ -313,7 +304,7 @@ function initializePresen
       translatePage();
    }
    function pushDown(){
-      s7.prepareAction(this.currentPage);
+//      s7.prepareAction(this.currentPage);
       pager.setPage(pager.currentPage);
       currentMode = viewMode;
       translatePage();
