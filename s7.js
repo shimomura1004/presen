@@ -188,9 +188,11 @@ function initializePresen
       if (currentMode == viewMode) {
          document.body.style.WebkitTransform = "scale("+scale+")";
          document.body.style.MozTransform    = "scale("+scale+")";
+         document.body.className = "slidemode";
       } else {
          document.body.style.WebkitTransform = "scale("+thumbScale+")";
          document.body.style.MozTransform    = "scale("+thumbScale+")";
+         document.body.className = "thumbsmode";
       }
 
       for (var i=0 ; i < pagedata.length ; i++) {

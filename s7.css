@@ -6,7 +6,6 @@ div.page {
 }
 
 body {
-    -webkit-transform: scale(1);
     overflow: hidden;
 
     -webkit-transition-property: -webkit-transform;
