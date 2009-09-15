@@ -413,8 +413,7 @@ var s7effect = {
    // 透明な状態から現れる
    dissolveInFast:(function(target){
       return function(){
-         $(target).addClass("fadeFastAction");
-         $(target).css("opacity", "1");
+         $(target).addClass("fadeFastAction").css("opacity", "1");
          setTimeout(function(){
             $(target).removeClass("fadeFastAction");
          }, 500);
@@ -423,12 +422,54 @@ var s7effect = {
    // 透明になって消える
    dissolveOutFast:(function(target){
       return function(){
-         $(target).addClass("fadeFastAction");
-         $(target).css("opacity", "0");
+         $(target).addClass("fadeFastAction").css("opacity", "0");
          setTimeout(function(){
             $(target).removeClass("fadeFastAction");
          }, 500);
       }
    }),
-   
+   // 拡大して現れる
+   expansionInFast:(function(target){
+      return function(){
+         $(target).addClass("disolveAction").css("opacity", "1").
+            css("-webkit-transform", "scale(1)");
+         setTimeout(function(){
+            $(target).removeClass("disolveAction");
+         }, 1000);
+      }
+   }),
+   // 拡大して消える
+   expansionOutFast:(function(target){
+      return function(){
+         $(target).addClass("disolveAction").
+            css("opacity", "0").
+            css("-webkit-transform", "scale(3)");
+         setTimeout(function(){
+            $(target).removeClass("disolveAction").
+               css("visible", "false");
+         }, 1000);
+      }
+   }),
+   // 縮小して現れる
+   contractInFast:(function(target){
+      return function(){
+         $(target).addClass("disolveAction").
+            css("visible", "true").
+            css("opacity", "1").
+            css("-webkit-transform", "scale(1)");
+         setTimeout(function(){
+            $(target).removeClass("disolveAction");
+         }, 1000);
+      }
+   }),
+   // 縮小して消える
+   contractOutFast:(function(target){
+      return function(){
+         $(target).addClass("disolveAction").css("opacity", "0").
+            css("-webkit-transform", "scale(0.1)");
+         setTimeout(function(){
+            $(target).removeClass("disolveAction");
+         }, 1000);
+      }
+   }),
 };

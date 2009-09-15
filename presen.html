@@ -7,19 +7,20 @@
     <script type="text/javascript" src="WebkitDetect.js"></script>
     <link rel="stylesheet" href="s7.css"
           type="text/css" media="screen" />
+    <link rel="stylesheet" href="print.css"
+          type="text/css" media="print" />
     <script type="text/javascript" src="s7.js"></script>
 
     <style type="text/css" media="screen,print">
 div.page {
     border: 5px solid white;
-    -webkit-border-radius: 10px;
 
+    -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
 
     background-image:
        -webkit-gradient(linear, left top, left bottom, from(white),
                         color-stop(0.1, white), to(rgb(205, 221, 241)));
-
     background-color: white;
 }
 div.title {
@@ -41,9 +42,6 @@ function init(){
    initializePresen(800, 600, 2);
 }
     </script>
-    <link rel="stylesheet" href="print.css"
-          type="text/css" media="print" />
-
   </head>
 
   <body onload="init()">
@@ -86,14 +84,14 @@ s7.setActions(1,
      s7effect.dissolveInFast("#whyjs2"),
      s7effect.dissolveInFast("#whyjs3"),
      s7effect.dissolveInFast("#whyjs4"),
-     [["#whyjs5", "opacity", "1"],
-      ["#whyjs5", "-webkit-transform","scale(1)"]]],
+     s7effect.expansionInFast("#whyjs5"),
+     s7effect.expansionOutFast("#whyjs5")],
     [s7effect.dissolveOutFast("#whyjs1"),
      s7effect.dissolveOutFast("#whyjs2"),
      s7effect.dissolveOutFast("#whyjs3"),
      s7effect.dissolveOutFast("#whyjs4"),
-     [["#whyjs5", "opacity", "0"],
-      ["#whyjs5","-webkit-transform","scale(0.1)"]]]);
+     s7effect.contractOutFast("#whyjs5"),
+     s7effect.contractInFast("#whyjs5")]);
     </script>
     <!-- ======================================== -->
     <div class="page">
@@ -102,7 +100,9 @@ s7.setActions(1,
         <li>
           <p>CSS でアニメーションを指定</p>
           <div id="configAnimation1" class="fadeFastAction"
-               style="background-color: skyblue; border: 2px solid blue; margin-left: 20px; margin-right: 100px; opacity:0;">
+               style="background-color: skyblue;
+                      border: 2px solid blue;
+                      margin-left: 20px; margin-right: 100px; opacity:0;">
             <a style="font-size: 16pt;">/* opacity の変化は線形に1秒かけておこなう */</a><br>
             <a>transition-property: opacity 1s linear;</a>
           </div>
@@ -110,7 +110,9 @@ s7.setActions(1,
         <li>
           <p>あとは JavaScript でスタイルの値を変更するだけ！</p>
           <div id="configAnimation2" class="fadeFastAction"
-               style="background-color: skyblue; border: 2px solid blue; margin-left: 20px; margin-right: 100px; opacity: 0;">
+               style="background-color: skyblue;
+                      border: 2px solid blue;
+                      margin-left: 20px; margin-right: 100px; opacity: 0;">
             <a style="font-size: 16pt;">// id が 'picture' の要素が1秒かけて透明になります</a><br>
             <a>$("#picture").css("opacity", "0")</a>
           </div>
@@ -118,7 +120,9 @@ s7.setActions(1,
         <li>
           <p>動作には任意の JavaScript の関数が設定できます</p>
           <div id="configAnimation3" class="fadeFastAction"
-               style="background-color: skyblue; border: 2px solid blue; margin-left: 20px; margin-right: 100px; opacity: 0;">
+               style="background-color: skyblue;
+                      border: 2px solid blue;
+                      margin-left: 20px; margin-right: 100px; opacity: 0;">
             <a style="font-size: 16pt;">// 見直しのために経過時間を記録</a><br>
             <a>recorder.push(new Date())</a>
           </div>
@@ -128,8 +132,8 @@ s7.setActions(1,
     <script>
       s7.setActions(2,
       [[["xpath://div[@id='configAnimation1']", "opacity", "1"]],
-       [["xpath://div[@id='configAnimation2']", "opacity", "1"]],
-       [["xpath://div[@id='configAnimation3']", "opacity", "1"]]],
+       [["#configAnimation2", "opacity", "1"]],
+       (function(){$("#configAnimation3").css("opacity", "1")})],
       [[["xpath://div[@id='configAnimation1']", "opacity", "0"]],
        [["xpath://div[@id='configAnimation2']", "opacity", "0"]],
        [["xpath://div[@id='configAnimation3']", "opacity", "0"]]]);
